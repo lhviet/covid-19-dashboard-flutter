@@ -8,10 +8,12 @@ import '../types.dart';
 class ListItemCountryRecordWidget extends StatelessWidget {
   const ListItemCountryRecordWidget({
     Key key,
+    @required this.index,
     @required this.countryModel,
     @required this.displayType,
   }) : super(key: key);
 
+  final int index;
   final CountryModel countryModel;
   final CountryModelSortableFieldEnum displayType;
 
@@ -19,10 +21,10 @@ class ListItemCountryRecordWidget extends StatelessWidget {
   TextStyle _getTextStyle([bool isHighlight=false]) =>
       (
           isHighlight ?
-          TextStyle(fontSize: 18,
+          TextStyle(fontSize: 16,
               color: Colors.deepOrangeAccent,
               fontStyle: FontStyle.italic) :
-          TextStyle(fontSize: 18, color: Colors.black87)
+          TextStyle(fontSize: 17, color: Colors.black87)
       );
 
   Text _getDisplayText() {
@@ -51,15 +53,18 @@ class ListItemCountryRecordWidget extends StatelessWidget {
 
   Text _getDisplayPercentageText() {
     int value = 0;
+    Color color = Colors.orange;
     switch (this.displayType) {
       case CountryModelSortableFieldEnum.ACTIVE:
         value = this.countryModel.activeCases;
         break;
       case CountryModelSortableFieldEnum.RECOVERED:
         value = this.countryModel.totalRecovered;
+        color = Colors.green;
         break;
       case CountryModelSortableFieldEnum.DEATHS:
         value = this.countryModel.totalDeaths;
+        color = Colors.black54;
         break;
       case CountryModelSortableFieldEnum.CONFIRMED:
       default:
@@ -74,7 +79,7 @@ class ListItemCountryRecordWidget extends StatelessWidget {
       valueStr,
       style: TextStyle(
         fontSize: 14,
-        color: Colors.redAccent,
+        color: color,
         fontStyle: FontStyle.italic,
       ),
       textAlign: TextAlign.end,
@@ -84,8 +89,18 @@ class ListItemCountryRecordWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget _item1() => Expanded(
-      child: Text(this.countryModel.country, style: _getTextStyle()),
-      flex: 2,
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text("${this.index + 1} ", style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: Colors.black54,
+            )),
+            Expanded(child: Text(this.countryModel.country, style: _getTextStyle())),
+          ],
+      ),
+      flex: 3,
     );
 
     Widget _item2() =>

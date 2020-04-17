@@ -169,6 +169,7 @@ class SummaryListState extends State<SummaryList> {
             );
           } else {
             return ListItemCountryRecordWidget(
+              index: index - 6,
               countryModel: summaryModel.countries[index - 6],
               displayType: _displayType,
             );
