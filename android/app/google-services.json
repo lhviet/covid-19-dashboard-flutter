@@ -1,0 +1,41 @@
+{
+  "project_info": {
+    "project_number": "620366783618",
+    "firebase_url": "https://covid-19-dashboard-eb7e5.firebaseio.com",
+    "project_id": "covid-19-dashboard-eb7e5",
+    "storage_bucket": "covid-19-dashboard-eb7e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620366783618:android:1229ea9a8ae54f55f3409b",
+        "android_client_info": {
+          "package_name": "com.bibooki.coronavirusdashboard.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "620366783618-ta6fho2d5ucb8v3kpu5n49itupcfbfuk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJZTbszIrE_o2gT41dvQbpIYM0EltxzLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620366783618-ta6fho2d5ucb8v3kpu5n49itupcfbfuk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-6148713949526588~2799191338"
+    }
+  ],
+  "configuration_version": "1"
+}
