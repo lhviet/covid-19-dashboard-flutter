@@ -147,11 +147,11 @@ class ListItemCountryRecordWidget extends StatelessWidget {
 
     final bgColor = this.isMarkedCountry == true ?
       Colors.yellow[100] :
-      this.index % 2 == 1 ? Colors.black12 : Colors.transparent;
+      this.index % 2 == 1 ? Colors.grey[100] : Colors.transparent;
 
     return Container(
       height: 45,
-      margin: EdgeInsets.only(left: 7, right: 7),
+      padding: EdgeInsets.only(left: 5, right: 5),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
