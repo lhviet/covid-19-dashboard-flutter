@@ -65,7 +65,7 @@ class ListItemCountryHeaderWidget extends StatelessWidget {
     );
 
     return Container(
-      height: 40,
+      height: 45,
       padding: EdgeInsets.only(left: 7, right: 7),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

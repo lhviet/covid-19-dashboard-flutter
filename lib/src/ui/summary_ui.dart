@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:coronavirusdashboard/src/models/country_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,9 @@ class SummaryList extends StatefulWidget {
 }
 
 class SummaryListState extends State<SummaryList> {
+  final prefsSummaryKey = 'summary';
+  final prefsSavedCountryKey = 'saved_countries';
+
   CountryModelSortableFieldEnum _displayType = CountryModelSortableFieldEnum.CONFIRMED;
   CountryModelSortableFieldEnum _sortingField = CountryModelSortableFieldEnum.CONFIRMED;
   SortingDirectionEnum _sortingDirection = SortingDirectionEnum.DESC;
@@ -26,10 +30,13 @@ class SummaryListState extends State<SummaryList> {
 
   SummaryModel _summaryModel;
 
+  List<String> _savedCountries = [];
+
   @override
   void initState() {
     super.initState();
     _loadSummaryFromPrefs();
+
     bloc.fetchSummary();
   }
 
@@ -39,12 +46,24 @@ class SummaryListState extends State<SummaryList> {
 
   void _loadSummaryFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String summaryStr = prefs.getString('summary');
+    String summaryStr = prefs.getString(prefsSummaryKey);
     if (summaryStr != null) {
       setState(() {
         _summaryModel = SummaryModel.fromJson(json.decode(summaryStr));
       });
     }
+
+    List<String> savedCountries = prefs.getStringList(prefsSavedCountryKey);
+    if (savedCountries != null) {
+      setState(() {
+        _savedCountries = savedCountries;
+      });
+    }
+  }
+
+  void _updateSavedCountries() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(prefsSavedCountryKey, _savedCountries);
   }
 
   SortingDirectionEnum _inverseDirection(SortingDirectionEnum dir) =>
@@ -120,6 +139,15 @@ class SummaryListState extends State<SummaryList> {
     _sorted = true;
   }
 
+  void _saveCountry(String country) => setState(() {
+    if (_savedCountries.contains(country)) {
+      _savedCountries.remove(country);
+    } else {
+      _savedCountries.add(country);
+    }
+    _updateSavedCountries();
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,12 +169,16 @@ class SummaryListState extends State<SummaryList> {
 
   Widget buildList(SummaryModel summaryModel) {
     final values = [summaryModel.cases, summaryModel.recovered, summaryModel.deaths];
+    final List<CountryModel> savedCountries = _savedCountries.length > 0 ?
+    summaryModel.countries.where((f) => _savedCountries.contains(f.country)).toList() : [];
+    savedCountries.sort((a, b) => a.country.compareTo(b.country));
+    final savedLength = savedCountries.length;
 
     // Sorting
     _sorting(summaryModel);
 
     return ListView.builder(
-        itemCount: summaryModel.countries.length + 6,
+        itemCount: summaryModel.countries.length + 6 + savedLength,
         itemBuilder: (BuildContext context, int index) {
           if (index < 3) {
             return ListItemColorWidget(
@@ -160,7 +192,17 @@ class SummaryListState extends State<SummaryList> {
               selectedField: _displayType,
               onPressed: _setDisplayType,
             );
-          } else if (index == 5) {
+          } else if (index > 4 && index < (savedLength + 5)) {
+            final countryModel = savedCountries[index - 5];
+            return ListItemCountryRecordWidget(
+              index: index - 5,
+              countryModel: countryModel,
+              displayType: _displayType,
+              isPlaceIconSelected: _savedCountries.contains(countryModel.country),
+              onTapPlaceIcon: _saveCountry,
+              isMarkedCountry: true,
+            );
+          } else if (index == savedLength + 5) {
             return ListItemCountryHeaderWidget(
               displayType: _displayType,
               onTap1: _sortCountry,
@@ -168,10 +210,13 @@ class SummaryListState extends State<SummaryList> {
               onTap3: _sortItem3,
             );
           } else {
+            final countryModel = summaryModel.countries[index - (savedLength + 6)];
             return ListItemCountryRecordWidget(
-              index: index - 6,
-              countryModel: summaryModel.countries[index - 6],
+              index: index - (savedLength + 6),
+              countryModel: countryModel,
               displayType: _displayType,
+              isPlaceIconSelected: _savedCountries.contains(countryModel.country),
+              onTapPlaceIcon: _saveCountry,
             );
           }
         });

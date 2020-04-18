@@ -11,11 +11,17 @@ class ListItemCountryRecordWidget extends StatelessWidget {
     @required this.index,
     @required this.countryModel,
     @required this.displayType,
+    this.isMarkedCountry,
+    this.isPlaceIconSelected,
+    @required this.onTapPlaceIcon,
   }) : super(key: key);
 
   final int index;
   final CountryModel countryModel;
   final CountryModelSortableFieldEnum displayType;
+  final bool isMarkedCountry;
+  final bool isPlaceIconSelected;
+  final Function(String) onTapPlaceIcon;
 
   String _formatNumber(int num) => NumberFormat.decimalPattern('en_US').format(num);
   TextStyle _getTextStyle([bool isHighlight=false]) =>
@@ -86,6 +92,17 @@ class ListItemCountryRecordWidget extends StatelessWidget {
     );
   }
 
+  InkWell _getDisplayPlaceIcon() {
+    return InkWell(
+        onTap: () => this.onTapPlaceIcon(this.countryModel.country),
+        child: Icon(
+          Icons.place,
+          color: this.isPlaceIconSelected ? Colors.pinkAccent : Colors.black45,
+          size: 24.0,
+          semanticLabel: 'Text to announce in accessibility modes',
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget _item1() => Expanded(
@@ -111,16 +128,26 @@ class ListItemCountryRecordWidget extends StatelessWidget {
           flex: 1,
     );
 
+    final List<Widget> item3Children = this.displayType != CountryModelSortableFieldEnum.CONFIRMED ?
+    [
+      _getDisplayText(),
+      _getDisplayPercentageText(),
+    ] : [
+      _getDisplayText(),
+      _getDisplayPercentageText(),
+      _getDisplayPlaceIcon()
+    ];
     Widget _item3() => Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          _getDisplayText(),
-          _getDisplayPercentageText(),
-        ],
+        children: item3Children,
       ),
         flex: 2,
     );
+
+    final bgColor = this.isMarkedCountry == true ?
+      Colors.yellow[100] :
+      this.index % 2 == 1 ? Colors.black12 : Colors.transparent;
 
     return Container(
       height: 45,
@@ -132,6 +159,7 @@ class ListItemCountryRecordWidget extends StatelessWidget {
             width: 0.1,
           ),
         ),
+        color: bgColor,
       ),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
