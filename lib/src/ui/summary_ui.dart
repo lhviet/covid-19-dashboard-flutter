@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:coronavirusdashboard/src/models/country_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,6 +39,9 @@ class SummaryListState extends State<SummaryList> {
     _loadSummaryFromPrefs();
 
     bloc.fetchSummary();
+
+    // Keep loading latest data in every 100 seconds
+    Timer.periodic(Duration(seconds: 100), (Timer t) => bloc.fetchSummary());
   }
 
   _setDisplayType(CountryModelSortableFieldEnum field) => setState(() {
@@ -185,7 +189,6 @@ class SummaryListState extends State<SummaryList> {
                 itemType: index, value: values[index], confirmed: values[0]
             );
           } else if (index == 3) {
-            print(summaryModel.lastFetch);
             return FetchedTimeWidget(summaryModel.lastFetch);
           } else if (index == 4) {
             return ListItemCountryDisplayButtonsWidget(

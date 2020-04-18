@@ -6,19 +6,18 @@ import 'dart:convert';
 import '../models/summary_model.dart';
 
 class SummaryApiProvider {
-  final String _apiUrl = "https://covid19-server.chrismichael.now.sh/api/v1/AllReports";
-
-  Client client = Client();
-
   Future<SummaryModel> fetchSummary() async {
-    // print("[START] Fetching Summary");
+    final String _apiUrl = "https://covid19-server.chrismichael.now.sh/api/v1/AllReports";
+    Client client = Client();
+
+//    print("[START] Fetching Summary");
     final response = await client.get(_apiUrl);
 
     final prefs = await SharedPreferences.getInstance();
 
-    // print(response.body.toString());
+//    print(response.body.toString());
     if (response.statusCode == 200) {
-      // print("[DONE] Fetching Summary");
+//      print("[DONE] Fetching Summary & Update Prefs");
       prefs.setString('summary', response.body);
 
       // If the call to the server was successful, parse the JSON
