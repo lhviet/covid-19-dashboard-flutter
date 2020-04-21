@@ -13,6 +13,9 @@ The project was ignited by Flutter/Dart.
 The Covid-19 Data source API I use in the project is from:
 - [covid19 API](https://github.com/ChrisMichaelPerezSantiago/covid19)
 
+## TESTING
+You may download the *app-release.apk* in this root directory and install into your Android device for testing.
+
 ## Screenshots
 <img src="https://res.cloudinary.com/ddlt2cjne/image/upload/v1587451723/mobile-covid-19/Screenshot_1587451554.png" alt="screenshot-1" width="300"/>
 <img src="https://res.cloudinary.com/ddlt2cjne/image/upload/v1587451722/mobile-covid-19/Screenshot_1587451598.png" alt="screenshot-2" width="300"/>
