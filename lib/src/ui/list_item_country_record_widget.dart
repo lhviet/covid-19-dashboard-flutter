@@ -14,6 +14,8 @@ class ListItemCountryRecordWidget extends StatelessWidget {
     this.isMarkedCountry,
     this.isPlaceIconSelected,
     @required this.onTapPlaceIcon,
+    this.isCountryMonitored,
+    this.onTapNotificationIcon,
   }) : super(key: key);
 
   final int index;
@@ -22,6 +24,8 @@ class ListItemCountryRecordWidget extends StatelessWidget {
   final bool isMarkedCountry;
   final bool isPlaceIconSelected;
   final Function(String) onTapPlaceIcon;
+  final bool isCountryMonitored;
+  final Function(String) onTapNotificationIcon;
 
   String _formatNumber(int num) => NumberFormat.decimalPattern('en_US').format(num);
   TextStyle _getTextStyle([bool isHighlight=false]) =>
@@ -92,14 +96,31 @@ class ListItemCountryRecordWidget extends StatelessWidget {
     );
   }
 
-  InkWell _getDisplayPlaceIcon() {
+  Widget _getDisplayPlaceIcon() {
+    if (this.displayType != CountryModelSortableFieldEnum.CONFIRMED)
+      return SizedBox.shrink();
+
     return InkWell(
         onTap: () => this.onTapPlaceIcon(this.countryModel.country),
         child: Icon(
           Icons.place,
           color: this.isPlaceIconSelected ? Colors.pinkAccent : Colors.black45,
           size: 24.0,
-          semanticLabel: 'Text to announce in accessibility modes',
+          semanticLabel: 'Monitoring a specific country',
+        ));
+  }
+
+  Widget _getDisplayNotificationIcon() {
+    if (this.displayType != CountryModelSortableFieldEnum.CONFIRMED || this.isMarkedCountry != true) {
+      return SizedBox.shrink();
+    }
+    return InkWell(
+      onTap: () => this.onTapNotificationIcon(this.countryModel.country),
+        child: Icon(
+          Icons.notifications_active,
+          color: this.isCountryMonitored == true ? Colors.blueAccent : Colors.black45,
+          size: 24.0,
+          semanticLabel: 'Get notification of updates',
         ));
   }
 
@@ -117,7 +138,7 @@ class ListItemCountryRecordWidget extends StatelessWidget {
             Expanded(child: Text(this.countryModel.country, style: _getTextStyle())),
           ],
       ),
-      flex: 3,
+      flex: 2,
     );
 
     Widget _item2() =>
@@ -128,14 +149,11 @@ class ListItemCountryRecordWidget extends StatelessWidget {
           flex: 1,
     );
 
-    final List<Widget> item3Children = this.displayType != CountryModelSortableFieldEnum.CONFIRMED ?
-    [
+    final List<Widget> item3Children = [
       _getDisplayText(),
       _getDisplayPercentageText(),
-    ] : [
-      _getDisplayText(),
-      _getDisplayPercentageText(),
-      _getDisplayPlaceIcon()
+      _getDisplayPlaceIcon(),
+      _getDisplayNotificationIcon(),
     ];
     Widget _item3() => Expanded(
       child: Row(

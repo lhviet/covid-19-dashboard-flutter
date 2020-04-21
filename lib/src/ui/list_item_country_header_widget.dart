@@ -45,7 +45,7 @@ class ListItemCountryHeaderWidget extends StatelessWidget {
           onTap: this.onTap1,
           child: Text('Country', style: _getTextStyle()),
         ),
-        flex: 3,
+        flex: 2,
     );
 
     Widget _item2() => Expanded(

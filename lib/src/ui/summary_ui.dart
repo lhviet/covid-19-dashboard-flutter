@@ -23,6 +23,7 @@ class SummaryList extends StatefulWidget {
 class SummaryListState extends State<SummaryList> {
   final prefsSummaryKey = 'summary';
   final prefsSavedCountryKey = 'saved_countries';
+  final prefsMonitoredCountryKey = 'monitored_countries';
 
   CountryModelSortableFieldEnum _displayType = CountryModelSortableFieldEnum.CONFIRMED;
   CountryModelSortableFieldEnum _sortingField = CountryModelSortableFieldEnum.CONFIRMED;
@@ -32,11 +33,12 @@ class SummaryListState extends State<SummaryList> {
   SummaryModel _summaryModel;
 
   List<String> _savedCountries = [];
+  List<String> _monitoredCountries = [];
 
   @override
   void initState() {
     super.initState();
-    _loadSummaryFromPrefs();
+    _loadDataFromPrefs();
 
     bloc.fetchSummary();
 
@@ -48,7 +50,7 @@ class SummaryListState extends State<SummaryList> {
     _displayType = field;
   });
 
-  void _loadSummaryFromPrefs() async {
+  void _loadDataFromPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String summaryStr = prefs.getString(prefsSummaryKey);
     if (summaryStr != null) {
@@ -63,11 +65,23 @@ class SummaryListState extends State<SummaryList> {
         _savedCountries = savedCountries;
       });
     }
+
+    List<String> monitoredCountries = prefs.getStringList(prefsMonitoredCountryKey);
+    if (monitoredCountries != null) {
+      setState(() {
+        _monitoredCountries = monitoredCountries;
+      });
+    }
   }
 
   void _updateSavedCountries() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setStringList(prefsSavedCountryKey, _savedCountries);
+  }
+
+  void _updateMonitoredCountries() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(prefsMonitoredCountryKey, _monitoredCountries);
   }
 
   SortingDirectionEnum _inverseDirection(SortingDirectionEnum dir) =>
@@ -152,6 +166,15 @@ class SummaryListState extends State<SummaryList> {
     _updateSavedCountries();
   });
 
+  void _monitorCountry(String country) => setState(() {
+    if (_monitoredCountries.contains(country)) {
+      _monitoredCountries.remove(country);
+    } else {
+      _monitoredCountries.add(country);
+    }
+    _updateMonitoredCountries();
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -204,6 +227,8 @@ class SummaryListState extends State<SummaryList> {
               isPlaceIconSelected: _savedCountries.contains(countryModel.country),
               onTapPlaceIcon: _saveCountry,
               isMarkedCountry: true,
+              isCountryMonitored: _monitoredCountries.contains(countryModel.country),
+              onTapNotificationIcon: _monitorCountry,
             );
           } else if (index == savedLength + 5) {
             return ListItemCountryHeaderWidget(

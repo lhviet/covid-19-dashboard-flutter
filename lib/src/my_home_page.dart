@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.lightBlueAccent.withAlpha(180),
         onPressed: _refreshData,
         tooltip: 'Renew',
-        child: _isLoading ? CircularProgressIndicator(backgroundColor: Colors.white) : Icon(Icons.autorenew),
+        child: _isLoading ? CircularProgressIndicator(backgroundColor: Colors.white) : Icon(Icons.autorenew, size: 40.0),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
